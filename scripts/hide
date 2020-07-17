@@ -1,0 +1,12 @@
+#!/bin/bash
+
+full_name="$1"
+
+base_name="$(basename "$full_name")"
+
+new_base_name=".$base_name"
+new_full_name="${full_name/$base_name/$new_base_name}"
+
+if [ "$full_name" != "$new_full_name" ]; then
+	mv "$full_name" "$new_full_name"
+fi

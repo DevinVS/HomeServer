@@ -1,0 +1,3 @@
+#!/bin/bash
+
+aws glacier upload-archive --account-id 397787144525 --vault-name homefiles-backup

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+yes no | find /share/Music -name "*.m4a" -exec m4aToMp3 {} \;
+find /share/Music -name "*.m4a" -exec mv "{}" "{}.bak" \;
+
+yes no | find /share/Music -name "*.wav" -exec wavToMp3 {} \;
+find /share/Music -name "*.wav" -exec mv "{}" "{}.bak" \;
+
+yes no | find /share/Music -name "*.wma" -exec wmaToMp3 {} \;
+find /share/Music -name "*.wma" -exec mv "{}" "{}.bak" \;
+
+find /share/Music -name "*.bak" -exec hide "{}" \;

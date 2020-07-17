@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Starting Convert"
+
+src_file=$1
+dest_file="${src_file/.wma/.mp3}"
+
+echo "Converting $src_file to $dest_file"
+
+ffmpeg -v 0 -i "$src_file" -acodec libmp3lame -aq 2 "$dest_file" > /dev/null
