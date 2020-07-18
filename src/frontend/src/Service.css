@@ -1,0 +1,99 @@
+.Service {
+    display: flex;
+    flex-direction: row;
+    background-color: white;
+    padding: 8px;
+    border-radius: 4px;
+    width: 100%;
+    margin: 8px 0px;
+}
+
+.Service .buttonGroup {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.Service button {
+    margin: 4px;
+    padding: 8px;
+    width: 120px;
+    border: none;
+    border-radius: 4px;
+}
+
+.Service button:hover {
+    cursor: pointer;
+}
+
+.Service .buttonGroup .restart {
+    background-color: #2eb2ff;
+    color: white;
+    transition: background-color 0.1s;
+}
+
+.Service .buttonGroup .restart:hover {
+    background-color: #67c5fc;
+}
+
+.Service .buttonGroup .restart:active {
+    background-color: #2592d1;
+}
+
+.Service .buttonGroup .viewLogs {
+    color: #2eb2ff;
+    background-color: white;
+    transition: color 0.1s;
+}
+
+.Service .buttonGroup .viewLogs:hover {
+    color: #67c5fc;
+}
+
+.Service .buttonGroup .viewLogs:active {
+    color: #2592d1;
+}
+
+.Service .name {
+    font-size: 1.5rem;
+    color: #2e2e2e;
+}
+
+.Service .status {
+    padding: 4px 16px;
+    color: #7e7e7e;
+}
+
+.Service .logs {
+    position: relative;
+    padding: 4px 16px;
+    color: white;
+    background-color: #2e2e2e;
+    word-break: keep-all;
+    overflow: scroll;
+    border-radius: 4px;
+    font-family: 'Source Code Pro', monospace;
+    font-size: 0.7rem;
+    width: 100%;
+    transition: height 0.3s;
+    transition: opacity 0.3s;
+    height: auto;
+    max-height: 200px;
+    white-space: pre-wrap;
+}
+
+.Service .logs.hidden {
+    height: 1px;
+    opacity: 0;
+}
+
+@media only screen and (max-width: 600px) {
+
+    .Service {
+        flex-direction: column;
+    }
+
+    .Service .buttonGroup {
+        flex-direction: row-reverse;
+    }
+}
