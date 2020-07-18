@@ -5,10 +5,11 @@
   "author": "Devin Vander Stelt",
   "license": "MIT",
   "scripts": {
-    "start": "node index.js"
+    "start": "sudo node index.js"
   },
   "dependencies": {
     "express": "^4.17.1",
+    "os-utils": "^0.0.14",
     "uuid": "^8.2.0",
     "ws": "^7.3.1"
   }

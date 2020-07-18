@@ -7,7 +7,7 @@
 #content {
   display: flex;
   flex-direction: column;
-  align-items: baseline;
+  align-items: center;
   width: 100%;
   max-width: 1000px;
 }
@@ -18,4 +18,34 @@
   align-items: baseline;
   width: 100%;
   padding: 16px;
+}
+
+#system {
+  width: 95%;
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+
+  border-bottom: 3px solid #2eb2ff;
+  border-radius: 2px;
+}
+
+.graphContainer {
+  height: 300px;
+}
+
+@media only screen and (max-width: 600px) {
+
+  #system {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .graphContainer {
+    width: 100%;
+    height: auto;
+    padding: 16px;
+  }
 }

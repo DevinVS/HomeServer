@@ -2,6 +2,8 @@ const express = require('express');
 const http = require('http');
 const WebSocket = require('ws');
 
+const osutils = require('os-utils');
+const os = require('os');
 const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const {v4: uuid} = require('uuid');
@@ -9,7 +11,7 @@ const {v4: uuid} = require('uuid');
 const port = 8888;
 const updateInterval = 3000;
 const pingInterval = 3000;
-const service_names = ['smbd', 'wsdd', 'backend', 'sshd'];
+const service_names = ['NetworkManager', 'sshd'];
 
 class Service {
     constructor(name) {
@@ -33,18 +35,67 @@ class Service {
     }
 }
 
+class System {
+    constructor() {
+        this.update();
+    }
+
+    update() {
+        this.getNetworkUsage();
+        this.getMemoryUsage();
+
+        osutils.cpuUsage((num) => {
+            this.cpu_usage = num;
+        });
+    }
+
+    async getMemoryUsage() {
+        exec('free -m', (err, stdout) => {
+            const data = stdout.split('\n').filter((line) => /Mem:/.test(line))[0].split(/\b\s+/);
+            
+            const total = data[0].substring(4).trim();
+            this.mem_usage = data[1] / total;
+        });
+    }
+
+    async getNetworkUsage() {
+        exec(`ifstat wlp0s20f3`, (err, stdout) => {
+            const data = stdout.split('\n').filter((line) => /wlp0s20f3/.test(line))[0].split(/\b\s+/);
+            
+            const dl = data[5];
+            const ul = data[7];
+
+            this.download_speed = this.toBytes(dl) / (updateInterval / 1000);
+            this.upload_speed = this.toBytes(ul) / (updateInterval / 1000);
+        })
+    }
+
+    toBytes(str) {
+        if (str.endsWith('K')) {
+            return str.substring(0, str.length-1) * 1000;
+        } else if (str.endsWith('M')) {
+            return str.substring(0, str.length-1) * 1000000;
+        } else if (str.endsWith('G')) {
+            return str.substring(0, str.length-1) * 1000000000;
+        } else {
+            return str;
+        }
+    }
+}
+
 const services = service_names.map((name) => new Service(name));
+const system = new System();
 
 const update_services = async function() {
-    let payload = [];
+
+    system.update();
 
     services.forEach((service) => {
         service.update();
-        payload.push(service);
     });
 
     wss.clients.forEach((ws) => {
-        ws.send(JSON.stringify({type: "status", payload: payload}));
+        ws.send(JSON.stringify({type: "status", payload: {services, system}}));
     });
 }
 
@@ -54,6 +105,8 @@ const app = express();
 app.use(express.static('build'));
 
 const server = http.createServer(app);
+
+app.get('/', (req, res) => {res.send("Hello World")})
 
 app.post("/:serviceName/restart", (req, res) => {
     const serviceName = req.params.serviceName;
