@@ -6,10 +6,10 @@ const util = require('util');
 const exec = util.promisify(require('child_process').exec);
 const {v4: uuid} = require('uuid');
 
-const port = 80;
+const port = 8888;
 const updateInterval = 3000;
 const pingInterval = 3000;
-const service_names = ['smbd', 'wsdd'];
+const service_names = ['smbd', 'wsdd', 'backend', 'sshd'];
 
 class Service {
     constructor(name) {
@@ -51,11 +51,9 @@ const update_services = async function() {
 setInterval(update_services, updateInterval);
 
 const app = express();
-app.use(express.static('public'));
+app.use(express.static('build'));
 
 const server = http.createServer(app);
-
-app.get('/', (req, res) => res.sendFile('index.html'));
 
 app.post("/:serviceName/restart", (req, res) => {
     const serviceName = req.params.serviceName;

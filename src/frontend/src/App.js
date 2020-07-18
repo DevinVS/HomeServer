@@ -6,8 +6,8 @@ import Service from './Service';
 const App = () => {
   const [services, setServices] = useState([]);
 
-  const baseUrl = "localhost/";
-  // const baseUrl = "192.168.2.55/";
+  // const baseUrl = "localhost/";
+  const baseUrl = "192.168.2.55:8888/";
 
   const onMessage = (msg) => {
     const data = JSON.parse(msg);
