@@ -1,0 +1,12 @@
+[Unit]
+Description=Minecraft Server
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=java -Xmx6G -Xms6G -jar /home/devin/MinecraftServer/server.jar nogui
+WorkingDirectory=/home/devin/MinecraftServer
+
+[Install]
+WantedBy=multi-user.target

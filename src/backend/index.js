@@ -9,9 +9,9 @@ const exec = util.promisify(require('child_process').exec);
 const {v4: uuid} = require('uuid');
 
 const port = 8888;
-const updateInterval = 3000;
+const updateInterval = 2000;
 const pingInterval = 3000;
-const service_names = ['NetworkManager', 'sshd'];
+const service_names = ['smbd','backup', 'backend','wsdd', 'MinecraftServer'];
 
 class Service {
     constructor(name) {
@@ -59,27 +59,13 @@ class System {
     }
 
     async getNetworkUsage() {
-        exec(`ifstat wlp0s20f3`, (err, stdout) => {
-            const data = stdout.split('\n').filter((line) => /wlp0s20f3/.test(line))[0].split(/\b\s+/);
-            
-            const dl = data[5];
-            const ul = data[7];
+        exec(`ifstat 1 1`, (err, stdout) => {
+            let data = stdout.split('\n');
+            data = data[data.length-2].split(/\b\s+/);
 
-            this.download_speed = this.toBytes(dl) / (updateInterval / 1000);
-            this.upload_speed = this.toBytes(ul) / (updateInterval / 1000);
+            this.download_speed = data[0].trim()*8/1000;
+            this.upload_speed = data[1]*8/1000;
         })
-    }
-
-    toBytes(str) {
-        if (str.endsWith('K')) {
-            return str.substring(0, str.length-1) * 1000;
-        } else if (str.endsWith('M')) {
-            return str.substring(0, str.length-1) * 1000000;
-        } else if (str.endsWith('G')) {
-            return str.substring(0, str.length-1) * 1000000000;
-        } else {
-            return str;
-        }
     }
 }
 

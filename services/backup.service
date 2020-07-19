@@ -1,0 +1,13 @@
+[Unit]
+Description=S3 Backup Service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/home/devin/HomeServer/scripts/backup
+User=devin
+Group=devin
+
+[Install]
+WantedBy=multi-user.target

@@ -3,6 +3,7 @@ import './App.css';
 import WebSocket from 'react-websocket';
 import Service from './Service';
 import {Line} from 'react-chartjs-2';
+import { defaults } from 'react-chartjs-2';
 
 const App = () => {
   const [services, setServices] = useState([]);
@@ -12,13 +13,8 @@ const App = () => {
   const [downHist, setDownHist] = useState(new Array(10));
   const [upHist, setUpHist] = useState(new Array(10));
 
-  const cpuRef = useRef(null);
-  const memRef = useRef(null);
-  const downRef = useRef(null);
-  const upRef = useRef(null);
-
-  const baseUrl = "localhost:8888/";
-  // const baseUrl = "192.168.2.55:8888/";
+  // const baseUrl = "localhost:8888/";
+  const baseUrl = "192.168.2.55:8888/";
 
   const onMessage = (msg) => {
     const data = JSON.parse(msg);
@@ -31,8 +27,8 @@ const App = () => {
 
         setCpuHist(cpuHist.concat(system.cpu_usage*100).slice(1));
         setMemHist(memHist.concat(system.mem_usage*100).slice(1));
-        setDownHist(downHist.concat(system.download_speed/1000000*8).slice(1));
-        setUpHist(upHist.concat(system.upload_speed/1000000*8).slice(1));
+        setDownHist(downHist.concat(system.download_speed).slice(1));
+        setUpHist(upHist.concat(system.upload_speed).slice(1));
 
         break;
       default:
@@ -40,13 +36,20 @@ const App = () => {
     }
   };
 
+  // Disable animating charts by default.
+  defaults.global.animation = false;
+
   const cpu_graph_data = {
     labels: ["", "", "", "", "", "", "", "", "", ""],
     datasets: [
       {
         label: 'CPU Usage (%)',
         backgroundColor: 'rgba(117, 173, 235, 0.8)',
-        pointRadius: 0,
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
         data: cpuHist
       }
     ]
@@ -57,7 +60,8 @@ const App = () => {
       yAxes: [{
         ticks: {
           max: 100,
-          min: 0
+          min: 0,
+          stepSize: 20
         }
       }]
     }
@@ -69,7 +73,11 @@ const App = () => {
       {
         label: 'Memory Usage (%)',
         backgroundColor: 'rgba(186, 39, 74, 0.8)',
-        pointRadius: 0,
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
         data: memHist
       }
     ]
@@ -80,7 +88,8 @@ const App = () => {
       yAxes: [{
         ticks: {
           max: 100,
-          min: 0
+          min: 0,
+          stepSize: 20
         }
       }]
     }
@@ -92,7 +101,13 @@ const App = () => {
       {
         label: 'Download Speed (Mib)',
         backgroundColor: 'rgba(151, 216, 178, 0.8)',
-        pointRadius: 0,
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
         data: downHist
       }
     ]
@@ -102,7 +117,8 @@ const App = () => {
     scales: {
       yAxes: [{
         ticks: {
-          min: 0
+          min: 0,
+          suggestedMax: 15
         }
       }]
     }
@@ -114,7 +130,13 @@ const App = () => {
       {
         label: 'Upload Speed (Mib)',
         backgroundColor: 'rgba(250, 130, 76, 0.8)',
-        pointRadius: 0,
+        pointBorderWidth: 1,
+        pointHoverRadius: 5,
+        pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+        pointHoverBorderColor: 'rgba(220,220,220,1)',
+        pointHoverBorderWidth: 2,
+        pointRadius: 1,
+        pointHitRadius: 10,
         data: upHist
       }
     ]
@@ -124,7 +146,9 @@ const App = () => {
     scales: {
       yAxes: [{
         ticks: {
-          min: 0
+          min: 0,
+          max: 5,
+          stepSize: 1
         }
       }]
     }
@@ -134,6 +158,7 @@ const App = () => {
   return (
     <div className="App">
       <div id="content">
+      <h1>Home Server Dashboard</h1>
         <div id="system">
           <div className="graphContainer"><Line data={cpu_graph_data} options={cpu_options}/></div>
           <div className="graphContainer"><Line data={mem_graph_data} options={mem_options} /></div>
